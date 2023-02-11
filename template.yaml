@@ -1,0 +1,109 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: >-
+  crud-sam-app
+Transform: 'AWS::Serverless-2016-10-31'
+
+Resources:
+  ApiGatewayApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: prod
+      Cors:
+        AllowMethods: "'POST, GET, PUT, DELETE, OPTIONS'"
+        AllowHeaders: "'Content-Type'"
+        AllowOrigin: "'*'"
+
+  SaveItemFunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: handler.saveItem
+      Runtime: nodejs16.x
+      CodeUri: ./functions
+      Description: Function to store task in the DynamoDB table.
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DynamoDBTable
+      Environment:
+        Variables:
+          TABLE_DYNAMODB: !Ref DynamoDBTable
+      Events:
+        Api:
+          Type: Api
+          Properties: 
+            Path: /tasks
+            Method: POST
+            RestApiId: 
+              !Ref ApiGatewayApi
+  GetAllItemsFunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: handler.getItems
+      Runtime: nodejs16.x
+      CodeUri: ./functions
+      Description: Function to get all the items in the DynamoDB table.
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DynamoDBTable
+      Environment:
+        Variables:
+          TABLE_DYNAMODB: !Ref DynamoDBTable
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /tasks
+            Method: GET
+            RestApiId: 
+              !Ref ApiGatewayApi
+
+  UpdateItemFunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: handler.updateItem
+      Runtime: nodejs16.x
+      CodeUri: ./functions
+      Description: Function to update an item in the DynamoDB table.
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DynamoDBTable
+      Environment:
+        Variables:
+          TABLE_DYNAMODB: !Ref DynamoDBTable
+      Events:
+        HelloAPI:
+          Type: Api
+          Properties:
+            Path: /tasks
+            Method: PUT
+            RestApiId: 
+              !Ref ApiGatewayApi
+
+  DeleteItemFunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: handler.deleteItem
+      Runtime: nodejs16.x
+      CodeUri: ./functions
+      Description: Function to delete an item in the DynamoDB table.
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DynamoDBTable
+      Environment:
+        Variables:
+          TABLE_DYNAMODB: !Ref DynamoDBTable
+      Events:
+        HelloAPI:
+          Type: Api
+          Properties:
+            Path: /tasks
+            Method: DELETE
+            RestApiId: 
+              !Ref ApiGatewayApi
+
+  DynamoDBTable:
+    Type: AWS::Serverless::SimpleTable
+
+Outputs:
+  ApiEndpoint:
+    Description: "API Gateway endpoint URL"
+    Value: !Sub "https://${ApiGatewayApi}.execute-api.${AWS::Region}.amazonaws.com/prod/"
