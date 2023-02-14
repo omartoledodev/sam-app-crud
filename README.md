@@ -72,10 +72,11 @@ Las políticas necesarias para poder acceder a los datos en DynamoDB desde las f
 ```yaml
       DynamoDBTable:
         Type: AWS::Serverless::SimpleTable
+```
 
 ## Despliegue
 
-Para desplegar la aplicación en AWS, se deben de ejecutar lo siguiente:
+Para desplegar la aplicación en AWS, se debe de ejecutar lo siguiente:
 
 ```bash
 sam build
