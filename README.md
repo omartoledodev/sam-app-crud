@@ -1,4 +1,4 @@
-# SAM APP CRUD
+# AWS SAM APP CRUD
 
 ![My Image](aws-sam-app-crud.png)
 
