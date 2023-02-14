@@ -71,7 +71,7 @@ Las políticas necesarias para poder acceder a los datos en DynamoDB desde las f
 ## DynamoDB (Base de datos)
 ```yaml
       DynamoDBTable:
-    Type: AWS::Serverless::SimpleTable
+        Type: AWS::Serverless::SimpleTable
 
 ## Despliegue
 
